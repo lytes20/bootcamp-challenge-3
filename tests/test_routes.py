@@ -33,3 +33,15 @@ class TestRun(TestCase):
         with self.client:
             response = self.client.get("/api/v1/users/requests/1")
             self.assertEquals(response.status_code, 200)
+
+    def test_edit_request(self):
+        """ test for edit a request for a logged in user"""
+        with self.client:
+            response = self.client.put(
+                "/api/v1/users/requests/1",
+                content_type='application/json',
+                data=json.dumps(dict(
+                    request_title="Fix Car",
+                    request_description="Car wind shield needs fixing"))
+                    )
+        self.assertEquals(response.status_code, 200)

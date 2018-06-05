@@ -13,6 +13,9 @@ class UserRequests(MethodView):
             return jsonify({"msg": "fetched the request"}), 200
         else:
             return jsonify({"msg": "fetched all requests"}), 200
+    def put(self, requestid):
+        """ fuction to edit a user request"""
+        return jsonify({"msg": "edited request"}), 200
     
 
     
@@ -24,3 +27,4 @@ user_requests_view = UserRequests.as_view('user_requests')
 
 user_requests.add_url_rule("/api/v1/users/requests",  view_func=user_requests_view, methods=['POST', 'GET'])
 user_requests.add_url_rule("/api/v1/users/requests/<requestid>",  view_func=user_requests_view, methods=['GET'])
+user_requests.add_url_rule("/api/v1/users/requests/<requestid>",  view_func=user_requests_view, methods=['PUT'])
