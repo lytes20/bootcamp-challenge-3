@@ -45,3 +45,13 @@ class TestRun(TestCase):
                     request_description="Car wind shield needs fixing"))
                     )
         self.assertEquals(response.status_code, 200)
+
+    def test_fetch_all_app_requests(self):
+        """ test for fetch all requests on the app endpoint """
+        with self.client:
+            response = self.client.get("/api/v1/requests")
+            self.assertEquals(response.status_code, 200)
+
+    def test_approve_a_request(self):
+        """ test for approve a request endpoint"""
+        pass
