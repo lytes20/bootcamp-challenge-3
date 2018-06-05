@@ -1,14 +1,7 @@
 venv/
-<<<<<<< HEAD
 .pytest_cache/
 __pycache__/
-<<<<<<< HEAD
 app/__pycache__
 tests/__pycache__
 
-=======
-=======
-app/__pycache__
-tests/__pycache__
->>>>>>> untracking __pyache__ packages
->>>>>>> develop
+

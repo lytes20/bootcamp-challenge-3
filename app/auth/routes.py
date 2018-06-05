@@ -1,5 +1,6 @@
 from flask.views import MethodView
 from flask import Blueprint, jsonify, request
+from app.models import User
 
 auth = Blueprint("auth", __name__)
 
@@ -12,8 +13,10 @@ class RegisterUser(MethodView):
             username = post_data.get('username')
             email = post_data.get('email')
             password = post_data.get('password')
+            isAdmin = post_data.get('isAdmin')
             
-            new_user = ""
+            new_user = User(username, email, password, isAdmin)
+            return jsonify({"new_user":new_user.__dict__}), 201
            
 
 

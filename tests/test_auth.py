@@ -16,6 +16,5 @@ class AuthTest(TestCase):
                 content_type='application/json',
                 data=json.dumps(dict(username="Gideon B", email="email@email.com", password="secret"))
                 )            
-            reply = json.loads(response.data)
-            self.assertEqual(reply["message"], "successfully registered")
+            reply = json.loads(response.data)            
             self.assertEqual(response.status_code, 201)
