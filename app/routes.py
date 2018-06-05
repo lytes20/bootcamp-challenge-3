@@ -1,7 +1,6 @@
-# from app import app
 from flask.views import MethodView
 from flask import Blueprint, jsonify
-# from flask_restful import Resource
+
 
 class UserRequests(MethodView):
     def post(self):
