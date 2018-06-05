@@ -1,3 +1,4 @@
 [
-  "tests/test_routes.py::TestRun::test_create_request"
+  "tests/test_routes.py::TestRun::test_create_request",
+  "tests/test_user_model.py::UserModelTest::test_create_user"
 ]
