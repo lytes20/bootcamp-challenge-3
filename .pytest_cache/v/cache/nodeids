@@ -1,3 +1,4 @@
 [
+  "tests/test_auth.py::AuthTest::test_register_user",
   "tests/test_routes.py::TestRun::test_create_request"
 ]

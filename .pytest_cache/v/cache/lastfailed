@@ -1,1 +1,3 @@
-{}
+{
+  "tests/test_auth.py::AuthTest::test_register_user": true
+}
