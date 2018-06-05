@@ -54,4 +54,12 @@ class TestRun(TestCase):
 
     def test_approve_a_request(self):
         """ test for approve a request endpoint"""
-        pass
+        with self.client:
+            response = self.client.put(
+                "/api/v1/requests/1/approve",
+                content_type='application/json',
+                data=json.dumps(dict(
+                    request_title="Fix Car",
+                    request_description="Car wind shield needs fixing",
+                    request_status="approve")))
+        self.assertEquals(response.status_code, 200)
