@@ -27,3 +27,9 @@ class TestRun(TestCase):
         with self.client:
             response = self.client.get("/api/v1/users/requests")        
             self.assertEquals(response.status_code, 200)
+
+    def test_fetch_a_request(self):
+        """ test for fetching a single request for a logged in user"""
+        with self.client:
+            response = self.client.get("/api/v1/users/requests/1")
+            self.assertEquals(response.status_code, 200)
