@@ -1,8 +1,12 @@
-from app import app, api
-from flask_restful import Resource
+# from app import app
+from flask.views import MethodView
+from flask import Blueprint, jsonify
+# from flask_restful import Resource
 
-class HelloWorld(Resource):
+class HelloWorld(MethodView):
     def get(self):
-        return {'hello': 'world'}
+        return jsonify({'hello': 'world'})
 
-api.add_resource(HelloWorld, '/')
+index = Blueprint("index", __name__)
+user_view = HelloWorld.as_view('hello_world')
+index.add_url_rule("/",  view_func=user_view, methods=['GET', 'POST'])
