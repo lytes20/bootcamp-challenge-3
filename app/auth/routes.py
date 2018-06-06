@@ -37,10 +37,10 @@ class LoginUser(MethodView):
         post_data = request.get_json()
         email = post_data.get('email')
         password = post_data.get('password')
-            
-        if email != 'email@email.com' or password != 'secret':
-            return jsonify({"msg": "Invalid username or password"}), 401
-        return jsonify({"msg":"Successful login"}), 200
+        
+
+        returned_email = db_connection.get_user_email(email)
+        return jsonify({"msg":returned_email}), 200
 
            
 

@@ -18,8 +18,11 @@ class dbConnection:
         create_new_user_command = ("INSERT INTO USER_TABLE VALUES ('{}', '{}', '{}', '{}', '{}')" .format(user_id, name, email, password, is_admin))
         self.cursor.execute(create_new_user_command)
 
-    def get_user_name(self, name):        
-        pass
+    def get_user_email(self, email):
+        fetch_a_single_user = ("SELECT * from user_table where email = '{}'" .format(email))        
+        self.cursor.execute(fetch_a_single_user)
+        user_email = self.cursor.fetchone()
+        return user_email
 
     def create_new_request(self, request_id, title, desc, requester_name, request_status):
         create_new_request_command = ("INSERT INTO USER_REQUESTS VALUES ('{}', '{}', '{}', '{}', '{}')" .format(request_id, title, desc, requester_name, request_status))
