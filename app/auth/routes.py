@@ -2,9 +2,12 @@ from flask.views import MethodView
 from flask import Blueprint, jsonify, request
 from app.models import User
 from dbconnection import dbConnection
+from app.auth.utitlity import ValidateAuthData
+import uuid
 
 auth = Blueprint("auth", __name__)
 db_connection = dbConnection()
+val_data = ValidateAuthData()
 
 class RegisterUser(MethodView):
     """ Route class to register a user """
@@ -17,17 +20,16 @@ class RegisterUser(MethodView):
         email = post_data.get('email')
         password = post_data.get('password')
         isAdmin = post_data.get('isAdmin')
+        user_id = uuid.uuid4().int & (1<<24)-1
 
-        if not username:
-            return jsonify({"msg": "Missing username parameter"}), 400
-        if not email:
-            return jsonify({"msg": "Missing email parameter"}), 400
-        if not password:
-            return jsonify({"msg": "Missing password parameter"}), 400  
         
-        new_user = User(username, email, password, isAdmin)
-        db_connection.create_new_user(1, username, email, password, isAdmin)
-        return jsonify({"new_user":new_user.__dict__}), 200
+        response = val_data.validate_register_data(username, email, password, isAdmin)
+        if response:
+            return jsonify(response), 400
+        else:
+            new_user = User(username, email, password, isAdmin)
+            db_connection.create_new_user(user_id, username, email, password, isAdmin)
+            return jsonify({"new_user":new_user.__dict__}), 200
 
 class LoginUser(MethodView):
     """ class to login a user """    
@@ -37,10 +39,14 @@ class LoginUser(MethodView):
         post_data = request.get_json()
         email = post_data.get('email')
         password = post_data.get('password')
-        
 
-        returned_email = db_connection.get_user_email(email)
-        return jsonify({"msg":returned_email}), 200
+        response = val_data.validate_login_data(email, password)
+
+        if response:
+            return jsonify(response), 400
+        else:
+            returned_email = db_connection.get_user_email(email)
+            return jsonify({"msg":returned_email}), 200
 
            
 
