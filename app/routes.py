@@ -3,6 +3,8 @@ from flask import Blueprint, jsonify, request
 
 user_requests = Blueprint("user_requests", __name__)
 
+
+
 class UserRequests(MethodView):
     """ class for creating, reading and editing user requests """
     def post(self):
