@@ -8,28 +8,28 @@ class RegisterUser(MethodView):
     """ Route class to register a user """
     def post(self):
         """ Register a user """
-        if request.content_type == 'application/json':
-            post_data = request.get_json()
-            username = post_data.get('username')
-            email = post_data.get('email')
-            password = post_data.get('password')
-            isAdmin = post_data.get('isAdmin')
-            
-            new_user = User(username, email, password, isAdmin)
-            return jsonify({"new_user":new_user.__dict__}), 200
+                
+        post_data = request.get_json()
+        username = post_data.get('username')
+        email = post_data.get('email')
+        password = post_data.get('password')
+        isAdmin = post_data.get('isAdmin')
+        
+        new_user = User(username, email, password, isAdmin)
+        return jsonify({"new_user":new_user.__dict__}), 200
 
 class LoginUser(MethodView):
     """ class to login a user """    
     def post(self):
         """ Login a user """
-        if request.content_type == 'application/json':
-            post_data = request.get_json()
-            email = post_data.get('email')
-            password = post_data.get('password')
+        
+        post_data = request.get_json()
+        email = post_data.get('email')
+        password = post_data.get('password')
             
-            if email != 'email@email.com' or password != 'secret':
-                return jsonify({"msg": "Invalid username or password"}), 401
-            return jsonify({"msg":"Successful login"}), 200
+        if email != 'email@email.com' or password != 'secret':
+            return jsonify({"msg": "Invalid username or password"}), 401
+        return jsonify({"msg":"Successful login"}), 200
 
            
 

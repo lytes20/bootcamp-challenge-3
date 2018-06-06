@@ -1,5 +1,5 @@
 from flask.views import MethodView
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 
 user_requests = Blueprint("user_requests", __name__)
 
@@ -22,9 +22,33 @@ class UserRequests(MethodView):
 class AdminActions(MethodView):
     """ class contains actions that can be performed by admin users """
     # TODO: approve(put), disapprove (put), resolve (put), view all reqquests (get)
+    @staticmethod
+    def get_new_request_status(self):
+        post_data = request.get_json()
+        new_request_status = post_data.get("request_status")
+        if new_request_status:
+            return jsonify({"msg":"No request status"}), 400
+        return new_request_status
+
     def get(self):
         """ fuction to fetch all requests on the application """
-        return jsonify({"msg": "fetched all requests"}), 200            
+        return jsonify({"msg": "fetched all requests"}), 200
+
+class ApproveRequest(MethodView):
+    """ class to approve  a request """
+    def put(self, requestid):
+        return jsonify({"msg" : "sss"}), 200
+
+class DisapproveRequest(MethodView):
+    """ class to disapprove a request """
+    def put(self):
+        pass
+
+class ResolveRequest(MethodView):
+    """ class to resolve a request """
+    def put(self):
+        pass 
+
 
     
 
@@ -33,6 +57,7 @@ class AdminActions(MethodView):
 
 user_requests_view = UserRequests.as_view('user_requests')
 admin_actions_view = AdminActions.as_view('admin_actions')
+approve_request_view = ApproveRequest.as_view('approve_request')
 
 #url rules for user_requests
 user_requests.add_url_rule("/api/v1/users/requests",  view_func=user_requests_view, methods=['POST', 'GET'])
@@ -41,3 +66,4 @@ user_requests.add_url_rule("/api/v1/users/requests/<requestid>",  view_func=user
 
 #url rules for admin actions
 user_requests.add_url_rule("/api/v1/requests",  view_func=admin_actions_view, methods=['GET'])
+user_requests.add_url_rule("/api/v1/requests/<requestid>/approve",  view_func=approve_request_view, methods=['PUT'])
