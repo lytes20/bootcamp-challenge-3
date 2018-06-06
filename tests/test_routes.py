@@ -20,10 +20,71 @@ class TestRun(TestCase):
                                             requester_name="Gideon B",
                                             request_status="pending",
                                             req_id=1)))
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
 
     def test_fetch_requests(self):
         """ test fetch all user requests endpoint """
         with self.client:
             response = self.client.get("/api/v1/users/requests")        
-            self.assertEquals(response.status_code, 200)
+            self.assertEqual(response.status_code, 200)
+
+    def test_fetch_a_request(self):
+        """ test for fetching a single request for a logged in user"""
+        with self.client:
+            response = self.client.get("/api/v1/users/requests/1")
+            self.assertEqual(response.status_code, 200)
+
+    def test_edit_request(self):
+        """ test for edit a request for a logged in user"""
+        with self.client:
+            response = self.client.put(
+                "/api/v1/users/requests/1",
+                content_type='application/json',
+                data=json.dumps(dict(
+                    request_title="Fix Car",
+                    request_description="Car wind shield needs fixing"))
+                    )
+        self.assertEqual(response.status_code, 200)
+
+    def test_fetch_all_app_requests(self):
+        """ test for fetch all requests on the app endpoint """
+        with self.client:
+            response = self.client.get("/api/v1/requests")
+            self.assertEqual(response.status_code, 200)
+
+    def test_approve_a_request(self):
+        """ test for approve a request endpoint"""
+        with self.client:
+            response = self.client.put(
+                "/api/v1/requests/1/approve",
+                content_type='application/json',
+                data=json.dumps(dict(
+                    request_title="Fix Car",
+                    request_description="Car wind shield needs fixing",
+                    request_status="approve")))
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_disapprove_a_request(self):
+        """ test for disapprove a request endpoint"""
+        with self.client:
+            response = self.client.put(
+                "/api/v1/requests/1/disapprove",
+                content_type='application/json',
+                data=json.dumps(dict(
+                    request_title="Fix Car",
+                    request_description="Car wind shield needs fixing",
+                    request_status="disapprove")))
+        self.assertEqual(response.status_code, 200)
+
+    def test_resolve_a_request(self):
+        """ test for resolve a request endpoint"""
+        with self.client:
+            response = self.client.put(
+                "/api/v1/requests/1/resolve",
+                content_type='application/json',
+                data=json.dumps(dict(
+                    request_title="Fix Car",
+                    request_description="Car wind shield needs fixing",
+                    request_status="resolve")))
+        self.assertEqual(response.status_code, 200)
