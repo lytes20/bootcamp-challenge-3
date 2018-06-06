@@ -1,6 +1,11 @@
 from flask import jsonify
-class ValidateAuthData:
+from dbconnection import dbConnection
+from validate_email import validate_email
 
+db_connection = dbConnection()
+
+class ValidateAuthData:
+    """ class to validate data that will be entered by users"""
     def validate_register_data(self, username, email, password, isAdmin):
         if not username:
             return {"msg": "Missing username parameter"}
@@ -14,6 +19,12 @@ class ValidateAuthData:
             return {"msg": "Missing email parameter"}
         if password == "":
             return {"msg": "Missing password parameter"}
+        is_valid = validate_email(email)
+        if not is_valid:
+            return {"msg": "Email invalid"}        
+        returned_email = db_connection.get_user_email(email)
+        if returned_email:
+            return {"msg": "User already exists"}
 
     def validate_login_data(self, email, password):        
         if not email:
@@ -24,5 +35,11 @@ class ValidateAuthData:
             return {"msg": "Missing email parameter"}
         if password == "":
             return {"msg": "Missing password parameter"}
+        is_valid = validate_email(email)
+        if not is_valid:
+            return {"msg": "Email invalid"}
+        
+
+    
 
 

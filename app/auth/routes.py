@@ -48,10 +48,6 @@ class LoginUser(MethodView):
             returned_email = db_connection.get_user_email(email)
             return jsonify({"msg":returned_email}), 200
 
-           
-
-
-
 registration_view = RegisterUser.as_view('register_user')
 login_view = LoginUser.as_view('login')
 
