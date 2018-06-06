@@ -1,15 +1,40 @@
 from flask.views import MethodView
 from flask import Blueprint, jsonify, request
+from app.models import MaintenanceRequest
+from dbconnection import dbConnection
 
 user_requests = Blueprint("user_requests", __name__)
+db_connection = dbConnection()
 
 
 
 class UserRequests(MethodView):
     """ class for creating, reading and editing user requests """
     def post(self):
-        """ create a new request """
-        return jsonify({'msg': 'created request'}), 200
+        #get entered data
+        data = request.get_json()
+
+        #picking the request attributes
+        req_title = data.get("request_title")
+        req_desc = data.get("request_description")
+        requester_name = "Gideon"
+        req_status = "pending"
+        req_id = 1
+
+        #validation
+        if not req_title:
+            return jsonify({"message": "Request has no title"}), 400
+        if not req_desc:
+            return jsonify({"message": "Request has no description"}), 400
+        if not requester_name:
+            return jsonify({"message": "Request must be issued by a user"}), 400
+        if not req_id:
+            return jsonify({"message": "Request has no id"}), 400
+
+        #storing entered request
+        new_request = MaintenanceRequest(req_title, req_desc, requester_name, req_status, req_id)        
+        db_connection.create_new_request(req_id, req_title, req_desc, requester_name, req_status)
+        return jsonify({'request': new_request.__dict__}), 200
 
     def get(self, requestid=None):
         """ get all requests for a logged in user, a single req """

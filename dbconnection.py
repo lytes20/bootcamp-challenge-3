@@ -21,6 +21,10 @@ class dbConnection:
     def get_user_name(self, name):        
         pass
 
+    def create_new_request(self, request_id, title, desc, requester_name, request_status):
+        create_new_request_command = ("INSERT INTO USER_REQUESTS VALUES ('{}', '{}', '{}', '{}', '{}')" .format(request_id, title, desc, requester_name, request_status))
+        self.cursor.execute(create_new_request_command)
+
 
 
 
