@@ -37,12 +37,12 @@ class AdminActions(MethodView):
 class ApproveRequest(MethodView):
     """ class to approve  a request """
     def put(self, requestid):
-        return jsonify({"msg" : "sss"}), 200
+        return jsonify({"msg" : "approved request"}), 200
 
 class DisapproveRequest(MethodView):
     """ class to disapprove a request """
-    def put(self):
-        pass
+    def put(self, requestid):
+        return jsonify({"msg" : "disapproved request"}), 200
 
 class ResolveRequest(MethodView):
     """ class to resolve a request """
@@ -58,6 +58,7 @@ class ResolveRequest(MethodView):
 user_requests_view = UserRequests.as_view('user_requests')
 admin_actions_view = AdminActions.as_view('admin_actions')
 approve_request_view = ApproveRequest.as_view('approve_request')
+disapprove_request_view = DisapproveRequest.as_view('dispprove_request')
 
 #url rules for user_requests
 user_requests.add_url_rule("/api/v1/users/requests",  view_func=user_requests_view, methods=['POST', 'GET'])
@@ -67,3 +68,4 @@ user_requests.add_url_rule("/api/v1/users/requests/<requestid>",  view_func=user
 #url rules for admin actions
 user_requests.add_url_rule("/api/v1/requests",  view_func=admin_actions_view, methods=['GET'])
 user_requests.add_url_rule("/api/v1/requests/<requestid>/approve",  view_func=approve_request_view, methods=['PUT'])
+user_requests.add_url_rule("/api/v1/requests/<requestid>/disapprove",  view_func=disapprove_request_view, methods=['PUT'])

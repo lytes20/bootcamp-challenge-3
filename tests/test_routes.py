@@ -63,3 +63,16 @@ class TestRun(TestCase):
                     request_description="Car wind shield needs fixing",
                     request_status="approve")))
         self.assertEquals(response.status_code, 200)
+
+
+    def test_disapprove_a_request(self):
+        """ test for disapprove a request endpoint"""
+        with self.client:
+            response = self.client.put(
+                "/api/v1/requests/1/disapprove",
+                content_type='application/json',
+                data=json.dumps(dict(
+                    request_title="Fix Car",
+                    request_description="Car wind shield needs fixing",
+                    request_status="disapprove")))
+        self.assertEquals(response.status_code, 200)
