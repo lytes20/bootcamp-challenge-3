@@ -1,7 +1,7 @@
 ## maintenance tracker api
 
-[![Build Status](https://travis-ci.org/lytes20/bootcamp-challenge-3.svg?branch=ch-cicd)](https://travis-ci.org/lytes20/bootcamp-challenge-3)
-[![Coverage Status](https://coveralls.io/repos/github/lytes20/bootcamp-challenge-3/badge.svg?branch=master)](https://coveralls.io/github/lytes20/bootcamp-challenge-3?branch=master)
+[![Build Status](https://travis-ci.org/lytes20/bootcamp-challenge-3.svg?branch=develop)](https://travis-ci.org/lytes20/bootcamp-challenge-3)
+[![Coverage Status](https://coveralls.io/repos/github/lytes20/bootcamp-challenge-3/badge.svg?branch=develop)](https://coveralls.io/github/lytes20/bootcamp-challenge-3?branch=develop)
 
 ## About
 This is an API for a maintenance tracker application that allows users to make maintenance or repair requests and monitor them
