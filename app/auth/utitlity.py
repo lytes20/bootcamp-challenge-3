@@ -1,4 +1,3 @@
-from flask import jsonify
 from dbconnection import dbConnection
 from validate_email import validate_email
 

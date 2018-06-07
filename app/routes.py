@@ -2,9 +2,12 @@ from flask.views import MethodView
 from flask import Blueprint, jsonify, request
 from app.models import MaintenanceRequest
 from dbconnection import dbConnection
+from app.utility import ValidateRequestData
+import uuid
 
 user_requests = Blueprint("user_requests", __name__)
 db_connection = dbConnection()
+val_req_data = ValidateRequestData ()
 
 
 
@@ -19,27 +22,26 @@ class UserRequests(MethodView):
         req_desc = data.get("request_description")
         requester_name = "Gideon"
         req_status = "pending"
-        req_id = 1
+        req_id = uuid.uuid4().int & (1<<24)-1
 
-        #validation
-        if not req_title:
-            return jsonify({"message": "Request has no title"}), 400
-        if not req_desc:
-            return jsonify({"message": "Request has no description"}), 400
-        if not requester_name:
-            return jsonify({"message": "Request must be issued by a user"}), 400
-        if not req_id:
-            return jsonify({"message": "Request has no id"}), 400
-
-        #storing entered request
-        new_request = MaintenanceRequest(req_title, req_desc, requester_name, req_status, req_id)        
-        db_connection.create_new_request(req_id, req_title, req_desc, requester_name, req_status)
-        return jsonify({'request': new_request.__dict__}), 200
+        #validation        
+        response = val_req_data.validate_request_creation(req_title, req_desc, requester_name, req_status)
+        if response:
+            return jsonify(response), 400
+        else:
+            #storing entered request
+            new_request = MaintenanceRequest(req_title, req_desc, requester_name, req_status, req_id)        
+            db_connection.create_new_request(req_id, req_title, req_desc, requester_name, req_status)
+            return jsonify({'request': new_request.__dict__}), 200
 
     def get(self, requestid=None):
         """ get all requests for a logged in user, a single req """
         if requestid:
-            return jsonify({"msg": "fetched the request"}), 200
+            response = val_req_data.validate_request_id(requestid)
+            if response:
+                return jsonify(response), 400
+            else:
+                return jsonify({"msg": "fetched the request"}), 200
         else:
             return jsonify({"msg": "fetched all requests"}), 200
     def put(self, requestid):
