@@ -8,150 +8,202 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 user_requests = Blueprint("user_requests", __name__)
 db_connection = dbConnection()
-val_req_data = ValidateRequestData ()
+val_req_data = ValidateRequestData()
+
 
 class UserRequests(MethodView):
     """ class for creating, reading and editing user requests """
     @jwt_required
     def post(self):
-        #get entered data
+        # get entered data
         data = request.get_json()
 
         current_user = get_jwt_identity()
 
-        #picking the request attributes
+        # picking the request attributes
         req_title = data.get("request_title")
         req_desc = data.get("request_description")
         requester_name = current_user
         req_status = "pending"
-        req_id = uuid.uuid4().int & (1<<24)-1
+        req_id = uuid.uuid4().int & (1 << 24)-1
 
-        #validation        
-        response = val_req_data.validate_request_creation(req_title, req_desc, requester_name, req_status)
+        # validation
+        response = val_req_data.validate_request_creation(
+            req_title, req_desc, requester_name, req_status)
         if response:
             return jsonify(response), 400
         else:
-            #storing entered request
-            new_request = MaintenanceRequest(req_title, req_desc, requester_name, req_status, req_id)        
-            db_connection.create_new_request(req_id, req_title, req_desc, requester_name, req_status)
+            # storing entered request
+            new_request = MaintenanceRequest(
+                req_title, req_desc, requester_name, req_status, req_id)
+            db_connection.create_new_request(
+                req_id, req_title, req_desc, requester_name, req_status)
             return jsonify({'request': new_request.__dict__}), 200
 
     @jwt_required
     def get(self, requestid=None):
-        """ get all requests for a logged in user, a single req """        
+        """ get all requests for a logged in user, a single req """
         current_user = get_jwt_identity()
-        #check if request id was passed or not
-        if requestid and requestid != None:
-            #validation
+
+        # check if request id was passed or not
+        if requestid and requestid is not None:
+            # validation
             response = val_req_data.validate_request_id(requestid)
             if response:
                 return jsonify(response), 400
             else:
-                returned_req = db_connection.get_a_single_user_request(requestid)
+                returned_req = db_connection.get_a_single_user_request(
+                    requestid)
                 return jsonify({"request": returned_req}), 200
         else:
             returned_reqs = db_connection.get_a_user_requests(current_user)
             return jsonify({"msg": returned_reqs}), 200
+
     @jwt_required
     def put(self, requestid):
         """ fuction to edit a user request"""
 
-        if requestid and requestid != None:
-            #validating requestid
+        if requestid and requestid is not None:
+            # validating requestid
             res = val_req_data.validate_request_id(requestid)
             if res:
                 return jsonify(res), 400
             else:
-                #get entered data
+                # get entered data
                 data = request.get_json()
 
-                #picking the request attributes
+                # picking the request attributes
                 req_title = data.get("request_title")
                 req_desc = data.get("request_description")
-                
-                #validating new entered data        
-                response = val_req_data.validate_edit_request_data(req_title, req_desc)
+
+                # validating new entered data
+                response = val_req_data.validate_edit_request_data(
+                    req_title, req_desc)
 
                 if response:
                     return jsonify(response), 400
                 else:
-                    #updating request
-                    db_connection.update_user_request(req_title, req_desc, requestid)
-                    updated_req = db_connection.get_a_single_user_request(requestid)
+                    # updating request
+                    db_connection.update_user_request(
+                        req_title, req_desc, requestid)
+                    updated_req = db_connection.get_a_single_user_request(
+                        requestid)
                     return jsonify({'request': updated_req}), 200
 
 
-class AdminActions(MethodView):
+class GetAllAppRequests(MethodView):
     """ class contains actions that can be performed by admin users """
-    # TODO: approve(put), disapprove (put), resolve (put), view all reqquests (get)
-
+    @jwt_required
     def get(self):
         """ fuction to fetch all requests on the application """
-        returned_reqs = db_connection.get_all_app_requests()
-        return jsonify({"msg": returned_reqs}), 200
-        
+        current_user = get_jwt_identity()
+
+        ret_u = {}
+        returned_user = db_connection.get_user_by_email(current_user)
+        ret_u["is_admin"] = returned_user[4]
+        if ret_u["is_admin"] is False:
+            return jsonify({"msg": "Action not allowed"})
+        else:
+            returned_reqs = db_connection.get_all_app_requests()
+            return jsonify({"msg": returned_reqs}), 200
+
 
 class ApproveRequest(MethodView):
     """ class to approve  a request """
+    @jwt_required
     def put(self, requestid):
-        if requestid and requestid != None:
-            #validating requestid
+        if requestid and requestid is not None:
+            # validating requestid
             res = val_req_data.validate_request_id(requestid)
             if res:
                 return jsonify(res), 400
-            else:                
-                #updating request        
-                db_connection.update_request_status(requestid, "approve")
-                updated_req = db_connection.get_a_single_user_request(requestid)
-                return jsonify({'request': updated_req}), 200
+            else:
+                current_user = get_jwt_identity()
+
+                ret_u = {}
+                returned_user = db_connection.get_user_by_email(current_user)
+                ret_u["is_admin"] = returned_user[4]
+                if ret_u["is_admin"] is False:
+                    return jsonify({"msg": "Action not allowed"})
+                else:
+                    # updating request
+                    db_connection.update_request_status(requestid, "approved")
+                    updated_req = db_connection.get_a_single_user_request(
+                        requestid)
+                    return jsonify({'request': updated_req}), 200
+
 
 class DisapproveRequest(MethodView):
     """ class to disapprove a request """
+    @jwt_required
     def put(self, requestid):
-        if requestid and requestid != None:
-            #validating requestid
+        if requestid and requestid is not None:
+            # validating requestid
             res = val_req_data.validate_request_id(requestid)
             if res:
                 return jsonify(res), 400
-            else:                
-                #updating request        
-                db_connection.update_request_status(requestid, "disapprove")
-                updated_req = db_connection.get_a_single_user_request(requestid)
-                return jsonify({'request': updated_req}), 200
+            else:
+                current_user = get_jwt_identity()
+
+                ret_u = {}
+                returned_user = db_connection.get_user_by_email(current_user)
+                ret_u["is_admin"] = returned_user[4]
+                if ret_u["is_admin"] is False:
+                    return jsonify({"msg": "Action not allowed"})
+                else:
+                    # updating request
+                    db_connection.update_request_status(
+                        requestid, "disapproved")
+                    updated_req = db_connection.get_a_single_user_request(
+                        requestid)
+                    return jsonify({'request': updated_req}), 200
+
 
 class ResolveRequest(MethodView):
     """ class to resolve a request """
+    @jwt_required
     def put(self, requestid):
-        if requestid and requestid != None:
-            #validating requestid
+        if requestid and requestid is not None:
+            # validating requestid
             res = val_req_data.validate_request_id(requestid)
             if res:
                 return jsonify(res), 400
-            else:                
-                #updating request        
-                db_connection.update_request_status(requestid, "resolve")
-                updated_req = db_connection.get_a_single_user_request(requestid)
-                return jsonify({'request': updated_req}), 200 
+            else:
+                current_user = get_jwt_identity()
 
-
-    
-
-
+                ret_u = {}
+                returned_user = db_connection.get_user_by_email(current_user)
+                ret_u["is_admin"] = returned_user[4]
+                if ret_u["is_admin"] is False:
+                    return jsonify({"msg": "Action not allowed"})
+                else:
+                    # updating request
+                    db_connection.update_request_status(requestid, "resolved")
+                    updated_req = db_connection.get_a_single_user_request(
+                        requestid)
+                    return jsonify({'request': updated_req}), 200
 
 
 user_requests_view = UserRequests.as_view('user_requests')
-admin_actions_view = AdminActions.as_view('admin_actions')
+admin_actions_view = GetAllAppRequests.as_view('admin_actions')
 approve_request_view = ApproveRequest.as_view('approve_request')
 disapprove_request_view = DisapproveRequest.as_view('dispprove_request')
 resolve_request_view = ResolveRequest.as_view('resolve_requeest')
 
-#url rules for user_requests
-user_requests.add_url_rule("/api/v1/users/requests",  view_func=user_requests_view, methods=['POST', 'GET'])
-user_requests.add_url_rule("/api/v1/users/requests/<requestid>",  view_func=user_requests_view, methods=['GET'])
-user_requests.add_url_rule("/api/v1/users/requests/<requestid>",  view_func=user_requests_view, methods=['PUT'])
+# url rules for user_requests
+user_requests.add_url_rule("/api/v1/users/requests",
+                           view_func=user_requests_view, methods=['POST', 'GET'])
+user_requests.add_url_rule("/api/v1/users/requests/<requestid>",
+                           view_func=user_requests_view, methods=['GET'])
+user_requests.add_url_rule("/api/v1/users/requests/<requestid>",
+                           view_func=user_requests_view, methods=['PUT'])
 
-#url rules for admin actions
-user_requests.add_url_rule("/api/v1/requests",  view_func=admin_actions_view, methods=['GET'])
-user_requests.add_url_rule("/api/v1/requests/<requestid>/approve",  view_func=approve_request_view, methods=['PUT'])
-user_requests.add_url_rule("/api/v1/requests/<requestid>/disapprove",  view_func=disapprove_request_view, methods=['PUT'])
-user_requests.add_url_rule("/api/v1/requests/<requestid>/resolve",  view_func=resolve_request_view, methods=['PUT'])
+# url rules for admin actions
+user_requests.add_url_rule(
+    "/api/v1/requests",  view_func=admin_actions_view, methods=['GET'])
+user_requests.add_url_rule("/api/v1/requests/<requestid>/approve",
+                           view_func=approve_request_view, methods=['PUT'])
+user_requests.add_url_rule("/api/v1/requests/<requestid>/disapprove",
+                           view_func=disapprove_request_view, methods=['PUT'])
+user_requests.add_url_rule("/api/v1/requests/<requestid>/resolve",
+                           view_func=resolve_request_view, methods=['PUT'])
