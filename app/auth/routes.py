@@ -4,6 +4,7 @@ from app.models import User
 from dbconnection import dbConnection
 from app.auth.utitlity import ValidateAuthData
 import uuid
+from flask_jwt_extended import create_access_token
 
 auth = Blueprint("auth", __name__)
 db_connection = dbConnection()
@@ -45,8 +46,13 @@ class LoginUser(MethodView):
         if response:
             return jsonify(response), 400
         else:
-            returned_email = db_connection.get_user_email(email)
-            return jsonify({"msg":returned_email}), 200
+            ret_u = {}
+            returned_user = db_connection.get_user_by_email(email)
+            # ret_u["email"]= returned_user[0][0]
+            # ret_u["password"]= returned_user[0][0]
+            access_token = create_access_token(identity=email)
+            ret_u["token"] = access_token
+            return jsonify({"msg":ret_u}), 200
 
 registration_view = RegisterUser.as_view('register_user')
 login_view = LoginUser.as_view('login')

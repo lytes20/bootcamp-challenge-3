@@ -21,8 +21,8 @@ class ValidateAuthData:
         is_valid = validate_email(email)
         if not is_valid:
             return {"msg": "Email invalid"}        
-        returned_email = db_connection.get_user_email(email)
-        if returned_email:
+        returned_user = db_connection.get_user_by_email(email)
+        if returned_user:
             return {"msg": "User already exists"}
 
     def validate_login_data(self, email, password):        

@@ -4,6 +4,7 @@ from app.models import MaintenanceRequest
 from dbconnection import dbConnection
 from app.utility import ValidateRequestData
 import uuid
+from flask_jwt_extended import jwt_required
 
 user_requests = Blueprint("user_requests", __name__)
 db_connection = dbConnection()
@@ -11,6 +12,7 @@ val_req_data = ValidateRequestData ()
 
 class UserRequests(MethodView):
     """ class for creating, reading and editing user requests """
+    @jwt_required
     def post(self):
         #get entered data
         data = request.get_json()
@@ -32,6 +34,7 @@ class UserRequests(MethodView):
             db_connection.create_new_request(req_id, req_title, req_desc, requester_name, req_status)
             return jsonify({'request': new_request.__dict__}), 200
 
+    @jwt_required
     def get(self, requestid=None):
         """ get all requests for a logged in user, a single req """        
 
@@ -47,7 +50,7 @@ class UserRequests(MethodView):
         else:
             returned_reqs = db_connection.get_a_user_requests("Gideon")
             return jsonify({"msg": returned_reqs}), 200
-    
+    @jwt_required
     def put(self, requestid):
         """ fuction to edit a user request"""
 
