@@ -2,9 +2,12 @@
 
 [![Build Status](https://travis-ci.org/lytes20/bootcamp-challenge-3.svg?branch=develop)](https://travis-ci.org/lytes20/bootcamp-challenge-3)
 [![Coverage Status](https://coveralls.io/repos/github/lytes20/bootcamp-challenge-3/badge.svg?branch=develop)](https://coveralls.io/github/lytes20/bootcamp-challenge-3?branch=develop)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6c291e396ed6535b16c5/maintainability)](https://codeclimate.com/github/lytes20/bootcamp-challenge-3/maintainability)
 
 ## About
-This is an API for a maintenance tracker application that allows users to make maintenance or repair requests and monitor them
+Maintenance Tracker App is an application that provides users with the ability to reach out to operations or repairs department regarding repair or maintenance requests and monitor the status of their request.
+
+This API for the maintenance tracker application allows users and admins to have the mentioned functionality above
 ## Features
 - Register a user
 - Login a user
