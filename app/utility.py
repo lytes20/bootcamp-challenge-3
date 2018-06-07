@@ -21,4 +21,12 @@ class ValidateRequestData:
         except:
             return {"msg":"invalid request id"}
 
+    def validate_edit_request_data(self, req_title, req_desc):
+        """ function to validate the new data being entered by a user """
+        if not req_title or req_title == "":
+            return {"msg":"Misssing request title"}
+        if not req_desc or req_desc == "":
+            return {"msg":"Misssing request description"}
+
+
         
