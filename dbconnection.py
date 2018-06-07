@@ -18,9 +18,8 @@ class dbConnection:
         create_new_user_command = ("INSERT INTO USER_TABLE VALUES ('{}', '{}', '{}', '{}', '{}')" .format(user_id, name, email, password, is_admin))
         self.cursor.execute(create_new_user_command)
 
-    def get_user_email(self, email):
-        fetch_a_single_user = ("SELECT * from user_table where email = '{}'" .format(email))        
-        self.cursor.execute(fetch_a_single_user)
+    def get_user_email(self, email):  
+        self.cursor.execute("SELECT * from user_table where email = '{}'" .format(email))
         user_email = self.cursor.fetchone()
         return user_email
 
@@ -32,6 +31,15 @@ class dbConnection:
         self.cursor.execute("SELECT * FROM user_requests WHERE request_owner = '{}'" .format(username))
         request = self.cursor.fetchall()
         return request
+
+    def get_all_app_requests(self):
+        self.cursor.execute("SELECT * from user_requests")
+        all_rows = self.cursor.fetchall()
+        return all_rows
+
+    def update_request_status(self, request_id):
+        self.cursor.execute()
+    
 
 
 

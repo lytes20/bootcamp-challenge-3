@@ -16,6 +16,9 @@ class ValidateRequestData:
 
     def validate_request_id(self, request_id):
         """ function to validate the request id entered """
-        if type(request_id) != int:
+        try:
+            int(request_id)
+        except:
             return {"msg":"invalid request id"}
+
         
