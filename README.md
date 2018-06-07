@@ -38,6 +38,7 @@ First clone the repository
     $ pip install -r requirements.txt
     $ python run.py
 ```
+**Note** If you are using a unix operating system, use: `` $ source venv/bin/activate ``
 #### Endpoints to create a user account and login into the application
 HTTP Method|End point | Public Access|Action
 -----------|----------|--------------|------
