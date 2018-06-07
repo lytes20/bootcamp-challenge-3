@@ -36,9 +36,13 @@ class dbConnection:
         return req
 
     def get_a_user_requests(self, username):
+        """ function to fetch all requests for a signed in user """
         self.cursor.execute("SELECT * FROM user_requests WHERE request_owner = '{}'" .format(username))
         req = self.cursor.fetchall()
+        if not req:
+            return {"msg": "No requests yet"}
         return req
+        
     def update_user_request(self, title, desc, request_id):
         update_command = ("UPDATE user_requests SET request_title='{}', request_desc='{}' where request_id='{}'" .format(title, desc, int(request_id)))
         self.cursor.execute(update_command)

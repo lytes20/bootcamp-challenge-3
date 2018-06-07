@@ -4,7 +4,7 @@ from app.models import MaintenanceRequest
 from dbconnection import dbConnection
 from app.utility import ValidateRequestData
 import uuid
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 user_requests = Blueprint("user_requests", __name__)
 db_connection = dbConnection()
@@ -17,10 +17,12 @@ class UserRequests(MethodView):
         #get entered data
         data = request.get_json()
 
+        current_user = get_jwt_identity()
+
         #picking the request attributes
         req_title = data.get("request_title")
         req_desc = data.get("request_description")
-        requester_name = "Gideon"
+        requester_name = current_user
         req_status = "pending"
         req_id = uuid.uuid4().int & (1<<24)-1
 
@@ -37,7 +39,7 @@ class UserRequests(MethodView):
     @jwt_required
     def get(self, requestid=None):
         """ get all requests for a logged in user, a single req """        
-
+        current_user = get_jwt_identity()
         #check if request id was passed or not
         if requestid and requestid != None:
             #validation
@@ -48,7 +50,7 @@ class UserRequests(MethodView):
                 returned_req = db_connection.get_a_single_user_request(requestid)
                 return jsonify({"request": returned_req}), 200
         else:
-            returned_reqs = db_connection.get_a_user_requests("Gideon")
+            returned_reqs = db_connection.get_a_user_requests(current_user)
             return jsonify({"msg": returned_reqs}), 200
     @jwt_required
     def put(self, requestid):
