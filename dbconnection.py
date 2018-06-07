@@ -27,10 +27,16 @@ class dbConnection:
         create_new_request_command = ("INSERT INTO USER_REQUESTS VALUES ('{}', '{}', '{}', '{}', '{}')" .format(request_id, title, desc, requester_name, request_status))
         self.cursor.execute(create_new_request_command)
 
-    def get_user_request(self, username):
+    def get_a_single_user_request(self, request_id):
+        """ function to retrieve a single request from the database for a logged in user"""
+        self.cursor.execute("SELECT * FROM user_requests WHERE request_id = '{}'" .format(request_id))
+        req = self.cursor.fetchall()
+        return req
+
+    def get_a_user_requests(self, username):
         self.cursor.execute("SELECT * FROM user_requests WHERE request_owner = '{}'" .format(username))
-        request = self.cursor.fetchall()
-        return request
+        req = self.cursor.fetchall()
+        return req
 
     def get_all_app_requests(self):
         self.cursor.execute("SELECT * from user_requests")

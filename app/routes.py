@@ -35,23 +35,28 @@ class UserRequests(MethodView):
             return jsonify({'request': new_request.__dict__}), 200
 
     def get(self, requestid=None):
-        """ get all requests for a logged in user, a single req """
-        if requestid:
+        """ get all requests for a logged in user, a single req """        
+
+        if requestid and requestid != None:
             response = val_req_data.validate_request_id(requestid)
             if response:
                 return jsonify(response), 400
             else:
-                return jsonify({"msg": "fetched the request"}), 200
+                returned_req = db_connection.get_a_single_user_request(requestid)
+                return jsonify({"request": returned_req}), 200
         else:
-            return jsonify({"msg": "fetched all requests"}), 200
+            returned_reqs = db_connection.get_a_user_requests("Gideon")
+            return jsonify({"msg": returned_reqs}), 200
+    
     def put(self, requestid):
         """ fuction to edit a user request"""
         return jsonify({"msg": "edited request"}), 200
 
+
 class AdminActions(MethodView):
     """ class contains actions that can be performed by admin users """
     # TODO: approve(put), disapprove (put), resolve (put), view all reqquests (get)
-    @staticmethod
+    
     def get_new_request_status(self):
         post_data = request.get_json()
         new_request_status = post_data.get("request_status")
