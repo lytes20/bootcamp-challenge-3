@@ -4,6 +4,8 @@ This file contains tests for the app.py file that contains my api endpoints
 from flask_testing import TestCase
 from app import app
 import json
+from flask_jwt_extended import create_access_token
+
 
 class TestRun(TestCase):
 
@@ -15,7 +17,7 @@ class TestRun(TestCase):
         with self.client:
             response = self.client.post("/api/v1/users/requests", content_type='application/json',
                                         data=json.dumps(dict(
-                                            request_title="Fix iphone", 
+                                            request_title="Fix iphone",
                                             request_description="iphone screen needs fixing",
                                             requester_name="Gideon B",
                                             request_status="pending",
@@ -25,7 +27,7 @@ class TestRun(TestCase):
     def test_fetch_requests(self):
         """ test fetch all user requests endpoint """
         with self.client:
-            response = self.client.get("/api/v1/users/requests")        
+            response = self.client.get("/api/v1/users/requests")
             self.assertEqual(response.status_code, 200)
 
     def test_fetch_a_request(self):
@@ -43,7 +45,7 @@ class TestRun(TestCase):
                 data=json.dumps(dict(
                     request_title="Fix Car",
                     request_description="Car wind shield needs fixing"))
-                    )
+            )
         self.assertEqual(response.status_code, 200)
 
     def test_fetch_all_app_requests(self):
@@ -64,7 +66,6 @@ class TestRun(TestCase):
                     request_status="approve")))
         self.assertEqual(response.status_code, 200)
 
-
     def test_disapprove_a_request(self):
         """ test for disapprove a request endpoint"""
         with self.client:
@@ -80,11 +81,15 @@ class TestRun(TestCase):
     def test_resolve_a_request(self):
         """ test for resolve a request endpoint"""
         with self.client:
+            response = self.client.post('/api/v1/user/login', content_type='application/json',
+                                        data=json.dumps(dict(email="testuser1@gmail.com", password="testpassword", isAdmin=True)))
+            
+            reply = json.loads(response.data.decode())
+            bearer = "Bearer {}".format(reply['token'])
+            headers = {'Authorization': bearer}
+
             response = self.client.put(
                 "/api/v1/requests/1/resolve",
                 content_type='application/json',
-                data=json.dumps(dict(
-                    request_title="Fix Car",
-                    request_description="Car wind shield needs fixing",
-                    request_status="resolve")))
+                headers=headers)
         self.assertEqual(response.status_code, 200)

@@ -1,3 +1,5 @@
+import re
+
 
 class ValidateRequestData:
     """ class to validate request deatails entered by users """
@@ -13,6 +15,17 @@ class ValidateRequestData:
         if not req_status or req_status == "":
             return {"msg": "Misssing request status"}
 
+        # https://www.tutorialspoint.com/How-to-check-if-a-string-contains-only-whitespace-letters-in-Python
+        if bool(re.match('^\s+$', req_title)):
+            return {"msg": "Misssing request title"}
+        if bool(re.match('^\s+$', req_desc)):
+            return {"msg": "Misssing request description"}
+
+        if not (req_title.replace(" ", "")).isalnum():
+            return {"msg": "Bad request title"}        
+        if not (req_desc.replace(" ", "")).isalnum():
+            return {"msg": "Bad request desc"}
+
     def validate_request_id(self, request_id):
         """ function to validate the request id entered """
         try:
@@ -26,3 +39,12 @@ class ValidateRequestData:
             return {"msg": "Misssing request title"}
         if not req_desc or req_desc == "":
             return {"msg": "Misssing request description"}
+        if bool(re.match('^\s+$', req_title)):
+            return {"msg": "Misssing request title"}
+        if bool(re.match('^\s+$', req_desc)):
+            return {"msg": "Misssing request description"}
+        # check for characters
+        if not (req_title.replace(" ", "")).isalnum():
+            return {"msg": "Bad request title"}        
+        if not (req_desc.replace(" ", "")).isalnum():
+            return {"msg": "Bad request desc"}

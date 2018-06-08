@@ -1,5 +1,6 @@
 from dbconnection import dbConnection
 from validate_email import validate_email
+import re
 
 db_connection = dbConnection()
 
@@ -20,7 +21,18 @@ class ValidateAuthData:
             return {"msg": "Missing email parameter"}
         if password == "":
             return {"msg": "Missing password parameter"}
-        is_valid = validate_email(email)
+        
+        # checking for multiple white spaces
+        if bool(re.match('^\s+$', username)):
+            return {"msg": "Missing username parameter"}
+        if bool(re.match('^\s+$', email)):
+            return {"msg": "Missing email parameter"}
+        if bool(re.match('^\s+$', password)):
+            return {"msg": "Password can not be whitespace"}
+        # check for characters in user name
+        if not (username.replace(" ", "")).isalnum():
+            return {"msg": "Bad user name"}    
+        is_valid = validate_email(email)  # using validate_email library
         if not is_valid:
             return {"msg": "Email invalid"}        
         returned_user = db_connection.get_user_by_email(email)
@@ -36,7 +48,13 @@ class ValidateAuthData:
         if email == "":
             return {"msg": "Missing email parameter"}
         if password == "":
-            return {"msg": "Missing password parameter"}
+            return {"msg": "Missing password parameter"}        
+        # checking for multiple white spaces
+        if bool(re.match('^\s+$', email)):
+            return {"msg": "Missing email parameter"}
+        if bool(re.match('^\s+$', password)):
+            return {"msg": "Password can not be whitespace"}    
+
         is_valid = validate_email(email)
         if not is_valid:
             return {"msg": "Email invalid"}
