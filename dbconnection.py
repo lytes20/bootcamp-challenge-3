@@ -18,6 +18,7 @@ class dbConnection:
     def create_new_user(self, user_id, name, email, password, is_admin):
         create_new_user_command = ("INSERT INTO USER_TABLE VALUES ('{}', '{}', '{}', '{}', '{}')" .format(user_id, name, email, password, is_admin))
         self.cursor.execute(create_new_user_command)
+        self.cursor.execute()
 
     def get_user_by_email(self, email):  
         self.cursor.execute("SELECT * from user_table where email = '{}'" .format(email))
