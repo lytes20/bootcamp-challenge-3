@@ -31,6 +31,7 @@ class TestingConfig(Config):
 
     TESTING = True
     DEBUG = True
+    DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/testdb"
 
 
 app_config = {

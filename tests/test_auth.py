@@ -1,13 +1,16 @@
 from flask_testing import TestCase
-from app import app
+from app import create_app
 import json
 
 
 class AuthTest(TestCase):
     """ class to test user authentication """
 
-    def create_app(self):
-        return app
+    def setUp(self):
+        self.app = create_app('testing')
+
+    def tearDown(self):
+        pass
 
     def test_register_user(self):
         """ Test for successful user register """

@@ -8,19 +8,16 @@ from config import app_config
 
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
+    # app.config.from_object(app_config[config_name])
     app.config.from_object(app_config['development'])
     app.config.from_pyfile('config.py')
 
     # registering plugable views
-    # app.register_blueprint(user_requests)
-    # app.register_blueprint(auth)
+    app.register_blueprint(user_requests)
+    app.register_blueprint(auth)
 
     # Setup the Flask-JWT-Extended extension
-    # app.config['JWT_SECRET_KEY'] = 'i-got-the-source'
-    # jwt = JWTManager(app)
-
-    @app.route('/')
-    def hello_world():
-        return 'Hello, World!'
+    app.config['JWT_SECRET_KEY'] = 'i-got-the-source'
+    jwt = JWTManager(app)
 
     return app
