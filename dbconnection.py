@@ -15,16 +15,16 @@ class dbConnection:
             pprint("can connect to the database")
 
     def create_new_user(self, user_id, name, email, password, is_admin):
-        create_new_user_command = ("INSERT INTO USER_TABLE VALUES ('{}', '{}', '{}', '{}', '{}')" .format(user_id, name, email, password, is_admin))
+        create_new_user_command = ("INSERT INTO USERS VALUES ('{}', '{}', '{}', '{}', '{}')" .format(user_id, name, email, password, is_admin))
         self.cursor.execute(create_new_user_command)
 
     def get_user_by_email(self, email):  
-        self.cursor.execute("SELECT * from user_table where email = '{}'" .format(email))
+        self.cursor.execute("SELECT * from USERS where email = '{}'" .format(email))
         user_email = self.cursor.fetchone()
         return user_email
 
-    def create_new_request(self, request_id, title, desc, requester_name, request_status):
-        create_new_request_command = ("INSERT INTO USER_REQUESTS VALUES ('{}', '{}', '{}', '{}', '{}')" .format(request_id, title, desc, requester_name, request_status))
+    def create_new_request(self, request_id, title, request_desc, requester_name, request_status):
+        create_new_request_command = ("INSERT INTO USER_REQUESTS VALUES ('{}', '{}', '{}', '{}', '{}')" .format(request_id, title, request_desc, requester_name, request_status))
         self.cursor.execute(create_new_request_command)
 
     def get_a_single_user_request(self, request_id):
@@ -43,8 +43,8 @@ class dbConnection:
             return {"msg": "No requests yet"}
         return req
         
-    def update_user_request(self, title, desc, request_id):
-        update_command = ("UPDATE user_requests SET request_title='{}', request_desc='{}' where request_id='{}'" .format(title, desc, int(request_id)))
+    def update_user_request(self, title, request_desc, request_id):
+        update_command = ("UPDATE user_requests SET request_title='{}', request_request_desc='{}' where request_id='{}'" .format(title, request_desc, int(request_id)))
         self.cursor.execute(update_command)
 
     def get_all_app_requests(self):
@@ -55,8 +55,44 @@ class dbConnection:
     def update_request_status(self, request_id, request_status):
         update_command = ("UPDATE user_requests SET request_status='{}' where request_id='{}'" .format(request_status, int(request_id)))
         self.cursor.execute(update_command)
-    
 
+class createTables(dbConnection):
+    """This class does database transactions for requests"""
+
+    def __init__(self):
+        self.instance = dbConnection.__init__(self)
+
+    def create_users_table(self):
+        try:
+            self.cursor.execute(
+                "CREATE TABLE users (id serial PRIMARY KEY, username varchar(100) UNIQUE, email varchar(100), password varchar(100), isadmin boolean);")
+            self.connection.commit()
+            pprint("Successfully created user table")
+        except:
+            pprint("We have an error in creating user table")
+            pass
+
+    def create_requests_table(self):
+        try:
+            self.cursor.execute(
+                "CREATE TABLE user_requests (id serial PRIMARY KEY, request_id int, title varchar(100), request_desc text, requester_name varchar(100), request_status varchar(20));")
+            self.connection.commit()
+            pprint("Succesfully created  requests table")
+        except:
+            pprint("We have an error in creating requests table")
+            pass
+
+    def drop_tbs(self):
+        try:
+            self.cursor.execute("DROP TABLE USERS;")
+            self.cursor.execute("DROP TABLE USER_REQUESTS;")
+            self.connection.commit()
+        except:
+            pass
+
+    
+createTables().create_requests_table()
+createTables().create_users_table()
 
 
 
