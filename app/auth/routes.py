@@ -30,7 +30,7 @@ class RegisterUser(MethodView):
         else:
             new_user = User(username, email, password, isAdmin)
             db_connection.create_new_user(user_id, username, email, password, isAdmin)
-            return jsonify({"new_user":new_user.__dict__}), 200
+            return jsonify({"message": "success", "new_user":new_user.__dict__}), 200
 
 class LoginUser(MethodView):
     """ class to login a user """    
