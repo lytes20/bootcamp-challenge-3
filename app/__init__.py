@@ -1,10 +1,12 @@
 from flask import Flask
+from flask_cors import CORS
 from app.routes import user_requests
 from app.auth.routes import auth
 from flask_jwt_extended import JWTManager
 
 
 app = Flask(__name__)
+CORS(app)
 
 app.register_blueprint(user_requests)
 app.register_blueprint(auth)
