@@ -7,7 +7,7 @@ from pprint import pprint
 class dbConnection:
     def __init__(self):
         try:
-            self.connection = psycopg2.connect("dbname = demo user=postgres password=Bamela@20 host=localhost port =5432")
+            self.connection = psycopg2.connect("dbname = d3c948urar7lgr user=svqtcjjrkmjmxs password=bc43b8ad99fed7cc7fc5c7121e69b5175de6303d93e4c6fdd3a8b0ce1498713c host=ec2-23-21-171-249.compute-1.amazonaws.com port =5432")
             self.connection.autocommit = True
             self.cursor = self.connection.cursor()
             pprint("made connection")
