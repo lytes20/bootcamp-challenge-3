@@ -5,6 +5,7 @@ from dbconnection import dbConnection
 from app.auth.utitlity import ValidateAuthData
 import uuid
 from flask_jwt_extended import create_access_token
+import datetime
 
 auth = Blueprint("auth", __name__)
 db_connection = dbConnection()
@@ -48,9 +49,7 @@ class LoginUser(MethodView):
         else:
             ret_u = {}
             returned_user = db_connection.get_user_by_email(email)
-            # ret_u["email"]= returned_user[0][0]
-            # ret_u["password"]= returned_user[0][0]
-            access_token = create_access_token(identity=email, fresh=True)
+            access_token = create_access_token(identity=email, expires_delta=datetime.timedelta(hours=24))
             ret_u["token"] = access_token
             return jsonify({"msg":ret_u}), 200
 
