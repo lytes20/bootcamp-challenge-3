@@ -52,12 +52,7 @@ class UserRequests(MethodView):
                 return jsonify({"request": returned_req}), 200
         else:
             returned_reqs = db_connection.get_a_user_requests(current_user)
-            pprint(returned_reqs)
-            pprint(returned_reqs)
             if isinstance(returned_reqs, dict):
-                pprint("------------------")
-                pprint("------------------")
-                pprint("------------------")
                 return jsonify(returned_reqs)
             else:
                 result = []
