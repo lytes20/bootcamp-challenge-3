@@ -5,6 +5,7 @@ from dbconnection import dbConnection
 from app.utility import ValidateRequestData
 import uuid
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from pprint import pprint
 
 user_requests = Blueprint("user_requests", __name__)
 db_connection = dbConnection()
@@ -51,7 +52,25 @@ class UserRequests(MethodView):
                 return jsonify({"request": returned_req}), 200
         else:
             returned_reqs = db_connection.get_a_user_requests(current_user)
-            return jsonify({"msg": returned_reqs}), 200
+            pprint(returned_reqs)
+            pprint(returned_reqs)
+            if isinstance(returned_reqs, dict):
+                pprint("------------------")
+                pprint("------------------")
+                pprint("------------------")
+                return jsonify(returned_reqs)
+            else:
+                result = []
+                for a_returned_req in returned_reqs:
+                    ar = {
+                        'request_id': a_returned_req[1],
+                        'request_title': a_returned_req[2],
+                        'request_desc': a_returned_req[3],
+                        'request_status': a_returned_req[4],
+                    }
+                    result.append(ar)
+
+                return jsonify({"requests": result}), 200
     @jwt_required
     def put(self, requestid):
         """ fuction to edit a user request"""

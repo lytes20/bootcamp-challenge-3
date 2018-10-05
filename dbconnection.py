@@ -8,6 +8,7 @@ class dbConnection:
     def __init__(self):
         try:
             self.connection = psycopg2.connect("dbname = d3c948urar7lgr user=svqtcjjrkmjmxs password=bc43b8ad99fed7cc7fc5c7121e69b5175de6303d93e4c6fdd3a8b0ce1498713c host=ec2-23-21-171-249.compute-1.amazonaws.com port =5432")
+            # self.connection = psycopg2.connect("dbname=demo user=postgres password=Bamela@20 host=localhost port=5432")
             self.connection.autocommit = True
             self.cursor = self.connection.cursor()
             pprint("made connection")
@@ -24,7 +25,7 @@ class dbConnection:
         return user_email
 
     def create_new_request(self, request_id, title, request_desc, requester_name, request_status):
-        create_new_request_command = ("INSERT INTO USER_REQUESTS VALUES ('{}', '{}', '{}', '{}', '{}')" .format(request_id, title, request_desc, requester_name, request_status))
+        create_new_request_command = ("INSERT INTO USER_REQUESTS (request_id, title, request_desc, requester_name, request_status) VALUES ({}, '{}', '{}', '{}', '{}')" .format(request_id, title, request_desc, requester_name, request_status))
         self.cursor.execute(create_new_request_command)
 
     def get_a_single_user_request(self, request_id):
@@ -37,10 +38,10 @@ class dbConnection:
 
     def get_a_user_requests(self, username):
         """ function to fetch all requests for a signed in user """
-        self.cursor.execute("SELECT * FROM user_requests WHERE request_owner = '{}'" .format(username))
+        self.cursor.execute("SELECT * FROM user_requests WHERE requester_name = '{}'" .format(username))
         req = self.cursor.fetchall()
         if not req:
-            return {"msg": "No requests yet"}
+            return {"msg": "You have not made any requests"}
         return req
         
     def update_user_request(self, title, request_desc, request_id):
