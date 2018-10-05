@@ -61,7 +61,8 @@ class UserRequests(MethodView):
                         'request_id': a_returned_req[1],
                         'request_title': a_returned_req[2],
                         'request_desc': a_returned_req[3],
-                        'request_status': a_returned_req[4],
+                        'request_owner': a_returned_req[4],
+                        'request_status': a_returned_req[5],
                     }
                     result.append(ar)
 
