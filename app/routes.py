@@ -116,7 +116,7 @@ class ApproveRequest(MethodView):
                 return jsonify(res), 400
             else:                
                 #updating request        
-                db_connection.update_request_status(requestid, "approve")
+                db_connection.update_request_status(requestid, "in progress")
                 updated_req = db_connection.get_a_single_user_request(requestid)
                 return jsonify({'request': updated_req}), 200
 
@@ -130,7 +130,7 @@ class DisapproveRequest(MethodView):
                 return jsonify(res), 400
             else:                
                 #updating request        
-                db_connection.update_request_status(requestid, "disapprove")
+                db_connection.update_request_status(requestid, "disapproved")
                 updated_req = db_connection.get_a_single_user_request(requestid)
                 return jsonify({'request': updated_req}), 200
 
@@ -144,7 +144,7 @@ class ResolveRequest(MethodView):
                 return jsonify(res), 400
             else:                
                 #updating request        
-                db_connection.update_request_status(requestid, "resolve")
+                db_connection.update_request_status(requestid, "finished")
                 updated_req = db_connection.get_a_single_user_request(requestid)
                 return jsonify({'request': updated_req}), 200 
 
