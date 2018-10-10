@@ -128,7 +128,14 @@ class ApproveRequest(MethodView):
                 #updating request        
                 db_connection.update_request_status(requestid, "in progress")
                 updated_req = db_connection.get_a_single_user_request(requestid)
-                return jsonify({'request': updated_req}), 200
+                new_req = {
+                    'request_id': updated_req[1],
+                    'request_title': updated_req[2],
+                    'request_desc': updated_req[3],
+                    'request_owner': updated_req[4],
+                    'request_status': updated_req[5],
+                }
+                return jsonify({'request': new_req}), 200
 
 class DisapproveRequest(MethodView):
     """ class to disapprove a request """
@@ -140,9 +147,16 @@ class DisapproveRequest(MethodView):
                 return jsonify(res), 400
             else:                
                 #updating request        
-                db_connection.update_request_status(requestid, "disapproved")
+                db_connection.update_request_status(requestid, "rejected")
                 updated_req = db_connection.get_a_single_user_request(requestid)
-                return jsonify({'request': updated_req}), 200
+                new_req = {
+                    'request_id': updated_req[1],
+                    'request_title': updated_req[2],
+                    'request_desc': updated_req[3],
+                    'request_owner': updated_req[4],
+                    'request_status': updated_req[5],
+                }
+                return jsonify({'request': new_req}), 200
 
 class ResolveRequest(MethodView):
     """ class to resolve a request """
@@ -156,7 +170,14 @@ class ResolveRequest(MethodView):
                 #updating request        
                 db_connection.update_request_status(requestid, "finished")
                 updated_req = db_connection.get_a_single_user_request(requestid)
-                return jsonify({'request': updated_req}), 200 
+                new_req = {
+                    'request_id': updated_req[1],
+                    'request_title': updated_req[2],
+                    'request_desc': updated_req[3],
+                    'request_owner': updated_req[4],
+                    'request_status': updated_req[5],
+                }
+                return jsonify({'request': new_req}), 200 
 
 
     
@@ -178,5 +199,5 @@ user_requests.add_url_rule("/api/v1/users/requests/<requestid>",  view_func=user
 #url rules for admin actions
 user_requests.add_url_rule("/api/v1/requests",  view_func=admin_actions_view, methods=['GET'])
 user_requests.add_url_rule("/api/v1/requests/<requestid>/approve",  view_func=approve_request_view, methods=['PUT'])
-user_requests.add_url_rule("/api/v1/requests/<requestid>/disapprove",  view_func=disapprove_request_view, methods=['PUT'])
+user_requests.add_url_rule("/api/v1/requests/<requestid>/reject",  view_func=disapprove_request_view, methods=['PUT'])
 user_requests.add_url_rule("/api/v1/requests/<requestid>/resolve",  view_func=resolve_request_view, methods=['PUT'])
