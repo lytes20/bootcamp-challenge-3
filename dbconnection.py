@@ -43,6 +43,12 @@ class dbConnection:
         if not req:
             return {"msg": "You have not made any requests"}
         return req
+
+    def get_admin_field(self, username):
+        """ function to fetch all requests for a signed in user """
+        self.cursor.execute("SELECT isadmin FROM USERS WHERE email = '{}'" .format(username))
+        is_admin = self.cursor.fetchall()
+        return is_admin[0][0]
         
     def update_user_request(self, title, request_desc, request_id):
         update_command = ("UPDATE user_requests SET request_title='{}', request_request_desc='{}' where request_id='{}'" .format(title, request_desc, int(request_id)))
