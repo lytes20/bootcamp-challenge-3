@@ -34,7 +34,7 @@ class dbConnection:
         req = self.cursor.fetchall()
         if not req:
             return {"msg": "request doesn't exist"}
-        return req
+        return req[0]
 
     def get_a_user_requests(self, username):
         """ function to fetch all requests for a signed in user """
