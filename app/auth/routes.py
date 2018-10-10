@@ -49,9 +49,10 @@ class LoginUser(MethodView):
         else:
             ret_u = {}
             returned_user = db_connection.get_user_by_email(email)
+            is_admin = db_connection.get_admin_field(email)
             access_token = create_access_token(identity=email, expires_delta=datetime.timedelta(hours=24))
             ret_u["token"] = access_token
-            return jsonify({"msg":ret_u}), 200
+            return jsonify({"msg":ret_u, "is_admin":is_admin}), 200
 
 registration_view = RegisterUser.as_view('register_user')
 login_view = LoginUser.as_view('login')
