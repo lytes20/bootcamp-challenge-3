@@ -103,7 +103,17 @@ class AdminActions(MethodView):
     def get(self):
         """ fuction to fetch all requests on the application """
         returned_reqs = db_connection.get_all_app_requests()
-        return jsonify({"msg": returned_reqs}), 200
+        result = []
+        for a_returned_req in returned_reqs:
+            ar = {
+                'request_id': a_returned_req[1],
+                'request_title': a_returned_req[2],
+                'request_desc': a_returned_req[3],
+                'request_owner': a_returned_req[4],
+                'request_status': a_returned_req[5],
+            }
+            result.append(ar)
+        return jsonify({"requests": result}), 200
         
 
 class ApproveRequest(MethodView):
